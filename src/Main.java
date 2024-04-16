@@ -26,6 +26,8 @@ public class Main {
 
         List<Address> allAddresses = AddressFileParser.getAddressList();
 
+        System.out.println("Задача №1");
+
         for (Address address : allAddresses) {
             if (currentDate.isAfter(address.getStartDate()) && currentDate.isBefore(address.getEndDate())) {
                 if (objectIds.contains(address.getObjectId())) {
@@ -33,6 +35,8 @@ public class Main {
                 }
             }
         }
+
+        System.out.println("Задача №2");
 
         List<AdmHierarchy> hierarchy = HierarchyParser.getHierarchy();
         Map<String, String> mapHierarchy = hierarchy.stream()
@@ -47,16 +51,17 @@ public class Main {
                 .filter(Address::isActiveAndActual)
                 .filter(address -> address.getTypeName().equals("проезд"))
                 .forEach(address -> {
-                    printAddress(address, mapHierarchy, mapActiveAddress);
-                    System.out.println();
+                    List<String> fullAddress = new ArrayList<>();
+                    buildFullAddress(fullAddress, address, mapHierarchy, mapActiveAddress);
+                    System.out.println(String.join(", ", fullAddress));
                 });
     }
 
-    public static void printAddress(Address address, Map<String, String> mapHierarchy, Map<String, Address> mapAddress) {
+    public static void buildFullAddress(List<String> fullAddress, Address address, Map<String, String> mapHierarchy, Map<String, Address> mapAddress) {
         String parentObjectId = mapHierarchy.get(address.getObjectId());
         if (parentObjectId != null && mapAddress.containsKey(parentObjectId)) {
-            printAddress(mapAddress.get(parentObjectId), mapHierarchy, mapAddress);
+            buildFullAddress(fullAddress, mapAddress.get(parentObjectId), mapHierarchy, mapAddress);
         }
-        System.out.print(address.getTypeName() + " " + address.getName() + " ");
+        fullAddress.add(address.getTypeName() + " " + address.getName());
     }
 }
