@@ -1,8 +1,7 @@
 import domain.Address;
 import domain.AdmHierarchy;
 import org.xml.sax.SAXException;
-import parser.AddressFileParser;
-import parser.HierarchyParser;
+import parser.XmlParser;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -24,7 +23,8 @@ public class Main {
             objectIds.add(objectId.trim());
         }
 
-        List<Address> allAddresses = AddressFileParser.getAddressList();
+        XmlParser xmlParser = new XmlParser();
+        List<Address> allAddresses = xmlParser.getAddressList();
 
         System.out.println("Задача №1");
 
@@ -38,7 +38,7 @@ public class Main {
 
         System.out.println("Задача №2");
 
-        List<AdmHierarchy> hierarchy = HierarchyParser.getHierarchy();
+        List<AdmHierarchy> hierarchy = xmlParser.getHierarchy();
         Map<String, String> mapHierarchy = hierarchy.stream()
                 .filter(AdmHierarchy::isActive)
                 .collect(Collectors.toMap(AdmHierarchy::getObjectId, AdmHierarchy::getParentObjectId));
